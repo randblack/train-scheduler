@@ -5,6 +5,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
+    <script src="./assets/javascript/luxon.js"></script>
+    <script src="./assets/javascript/moment.min.js"></script>
     <script>
     // Initialize Firebase
     var config = {
@@ -30,14 +32,14 @@ database.ref().on("value", function(snapshot) {
     var trainName = $('<th>').html(snapshot.val()[newTrain[i]].newTrain.trainName);
     trainName.attr('scope', 'row')
     var destination = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.destination);
-    var firstTrainTime = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.firstTrainTime);
     var frequency = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.frequency);
-    // var monthsWorked = $('<td>').html('1');
-    // var totalBilled = $('<td>').html('1');
+    var nextArrivalTime = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.nextArrivalTime);
+    var minutesAway = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.minutesAway);
     tableRow.append(trainName);
     tableRow.append(destination);
     tableRow.append(frequency);
-    tableRow.append(firstTrainTime);
+    tableRow.append(nextArrivalTime);
+    tableRow.append(minutesAway);
     $('#employeeTable').append(tableRow);
   }
 
@@ -47,13 +49,23 @@ function setup () {
   $("#submitTrain").on("click", function(){
     let trainName = $('#trainName').val();
     let destination = $('#destination').val();;
-    // let firstTrainTime = $('#firstTrainTime').val();;
     let frequency = $('#frequency').val();;
+    let firstTrainTime = $('#firstTrainTime').val();;
+    firstTimeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
+    currentTime = moment();
+    timeDifference = moment().diff(moment(firstTimeConverted), "minutes");
+    remainder = timeDifference % frequency;
+    minutesAway = frequency - remainder;
+    console.log(minutesAway);
+    nextArrival = moment().add(minutesAway, "minutes");
+    nextArrivalTime = moment(nextArrival).format("hh:mm");
+    console.log(nextArrivalTime);
     let newTrain = {
         trainName: trainName,
         destination: destination,
-        // firstTrainTime: firstTrainTime,
-        frequency: frequency
+        frequency: frequency,
+        nextArrivalTime: nextArrivalTime,
+        minutesAway: minutesAway
     }
     console.log(newTrain);
     database.ref().push({
