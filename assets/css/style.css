@@ -1,0 +1,19 @@
+#formContent {
+	padding: 25px;
+	border: solid 1px rgb(218, 218, 218);
+	width: 90%;
+	margin: auto;
+	border-radius: 5px;
+	margin-bottom: 25px;
+}
+#tableContent {
+	border-radius: 5px;
+	border: solid 1px rgb(218, 218, 218);
+	margin-bottom: 25px;
+}
+.jumbotron {
+	text-align: center;
+	margin-bottom: 25px;
+	margin-top: 25px;
+	background-image: linear-gradient(rgb(79, 216, 152), rgb(42, 190, 121));
+}

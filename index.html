@@ -7,93 +7,8 @@
     <script src="https://www.gstatic.com/firebasejs/5.8.6/firebase.js"></script>
     <script src="./assets/javascript/luxon.js"></script>
     <script src="./assets/javascript/moment.min.js"></script>
-    <script>
-    // Initialize Firebase
-    var config = {
-      apiKey: "AIzaSyAswgmZ536I0ZtdFRx9OEhdhjft-ZFOyjM",
-      authDomain: "employee-data-e4941.firebaseapp.com",
-      databaseURL: "https://employee-data-e4941.firebaseio.com",
-      projectId: "employee-data-e4941",
-      storageBucket: "",
-      messagingSenderId: "811195306784"
-    };
-    firebase.initializeApp(config);
-      firebase.database.enableLogging(function(message) {
-      //console.log("[FIREBASE]", message);
-      });
-      let database = firebase.database();
-// { myKey: "this is the value", myKey2: "value", myKey3: "value"} myObject.myKey [{myKey: "value"}, {myKey: "value"}]
-database.ref().on("value", function(snapshot) {
-  console.log(snapshot.val())
-  console.log(Object.keys(snapshot) + " keys")
-  newTrain = Object.keys(snapshot.val());
-  for (i = 0; i < newTrain.length; i++) {
-    var tableRow = $('<tr>');
-    var trainName = $('<th>').html(snapshot.val()[newTrain[i]].newTrain.trainName);
-    trainName.attr('scope', 'row')
-    var destination = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.destination);
-    var frequency = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.frequency);
-    var nextArrivalTime = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.nextArrivalTime);
-    var minutesAway = $('<td>').html(snapshot.val()[newTrain[i]].newTrain.minutesAway);
-    tableRow.append(trainName);
-    tableRow.append(destination);
-    tableRow.append(frequency);
-    tableRow.append(nextArrivalTime);
-    tableRow.append(minutesAway);
-    $('#employeeTable').append(tableRow);
-  }
-
-});
-
-function setup () {
-  $("#submitTrain").on("click", function(){
-    let trainName = $('#trainName').val();
-    let destination = $('#destination').val();;
-    let frequency = $('#frequency').val();;
-    let firstTrainTime = $('#firstTrainTime').val();;
-    firstTimeConverted = moment(firstTrainTime, "hh:mm").subtract(1, "years");
-    currentTime = moment();
-    timeDifference = moment().diff(moment(firstTimeConverted), "minutes");
-    remainder = timeDifference % frequency;
-    minutesAway = frequency - remainder;
-    console.log(minutesAway);
-    nextArrival = moment().add(minutesAway, "minutes");
-    nextArrivalTime = moment(nextArrival).format("hh:mm");
-    console.log(nextArrivalTime);
-    let newTrain = {
-        trainName: trainName,
-        destination: destination,
-        frequency: frequency,
-        nextArrivalTime: nextArrivalTime,
-        minutesAway: minutesAway
-    }
-    console.log(newTrain);
-    database.ref().push({
-      newTrain
-    });
-  });
-}
-    </script>
-    <style>
-      #formContent {
-        padding: 25px;
-        border: solid 1px rgb(218, 218, 218);
-        width: 90%;
-        margin: auto;
-        border-radius: 5px;
-        margin-bottom: 25px;
-      }
-      #tableContent {
-        border-radius: 5px;
-        border: solid 1px rgb(218, 218, 218);
-        margin-bottom: 25px;
-      }
-      .jumbotron {
-        text-align: center;
-        margin-bottom: 25px;
-        margin-top: 25px;
-      }
-    </style>
+    <script src="./assets/javascript/script.js"></script>
+    <link rel="stylesheet" href="./assets/css/style.css">
   </head>
   <body onLoad="setup();">
     <div class="container">
@@ -117,28 +32,32 @@ function setup () {
             </tbody>
           </table>
     </div>
-    <div id="formContent" class="container">
-      <form>
-        <div class="form-group">
-          <label for="exampleFormControlInput1">Train Name</label>
-          <input type="name" class="form-control" id="trainName" placeholder="Name of Train">
-        </div>
-        <div class="form-group">
-          <label for="exampleFormControlInput1">Destination</label>
-          <input type="role" class="form-control" id="destination" placeholder="Los Angeles">
-        </div>
-          <div class="form-group">
-            <label for="exampleFormControlInput1">First Train Time (hh:mm)</label>
-            <input type="text" class="form-control" id="firstTrainTime" placeholder="12:00">
+    <div class="container">
+        <div class="card">
+            <div class="card-header">Add a Train</div>
+            <div class="card-body">      <form>
+                <div class="form-group">
+                  <label for="exampleFormControlInput1">Train Name</label>
+                  <input type="name" class="form-control" id="trainName" placeholder="Name of Train">
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlInput1">Destination</label>
+                  <input type="role" class="form-control" id="destination" placeholder="Los Angeles">
+                </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">First Train Time (hh:mm)</label>
+                    <input type="text" class="form-control" id="firstTrainTime" placeholder="12:00">
+                  </div>
+                  <div class="form-group">
+                    <label for="exampleFormControlInput1">Frequency</label>
+                    <input type="rate" class="form-control" id="frequency" placeholder="15">
+                  </div>
+                  <div class="form-group"> <!-- Submit button !-->
+                    <button id="submitTrain" class="btn btn-primary " name="submit" type="submit">Add</button>
+                  </div>
+              </form></div> 
           </div>
-          <div class="form-group">
-            <label for="exampleFormControlInput1">Frequency</label>
-            <input type="rate" class="form-control" id="frequency" placeholder="15">
-          </div>
-          <div class="form-group"> <!-- Submit button !-->
-            <button id="submitTrain" class="btn btn-primary " name="submit" type="submit">Submit</button>
-          </div>
-      </form>
+
     </div>
   </body>
 </html>
